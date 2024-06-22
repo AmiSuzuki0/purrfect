@@ -4,7 +4,7 @@ import { WebClient, WebAPICallResult } from '@slack/web-api';
 interface OAuthAccessResult extends WebAPICallResult {
   access_token: string;
   scope: string;
-  authed_user?: {
+  authed_user: {
     id: string;
     access_token: string;
     token_type: string;
