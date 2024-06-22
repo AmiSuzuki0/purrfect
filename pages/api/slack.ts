@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { WebClient } from '@slack/web-api';
+import { WebClient,WebAPICallResult } from '@slack/web-api';
 
 interface UserInfo {
   profile: {
