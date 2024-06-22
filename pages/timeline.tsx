@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { Rammetto_One } from "next/font/google";
 import Loading from '../components/loading';
 
+
 const RammettoOne = Rammetto_One({ subsets: ["latin"], weight: ["400"] });
 
 interface Message {
@@ -61,7 +62,7 @@ const Timeline: React.FC = () => {
   return (
     <div className="bg-slate-900 min-h-lvh text-slate-400 pt-8 pb-8">
         <div className="container sm:mx-auto pr-2 pl-2 box-border max-w-xl mr-auto ml-auto">
-            <h1 className={`${RammettoOne.className} text-7xl text-center`}>🐱 purrfect 🐱</h1>
+            <h1 className={`${RammettoOne.className} text-7xl -ml-12 text-center`}><img className="inline w-24 mr-4" src="/img/logo01.png" alt="" />purrfect</h1>
             <div className="grid w-full mt-16 gap-y-8">
                 {loading ? (
                 <Loading />
