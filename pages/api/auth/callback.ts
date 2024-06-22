@@ -4,7 +4,13 @@ import { WebClient, WebAPICallResult } from '@slack/web-api';
 interface OAuthAccessResult extends WebAPICallResult {
   access_token: string;
   scope: string;
+  authed_user?: {
+    id: string;
+    access_token: string;
+    token_type: string;
+  };
 }
+
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const code = req.query.code as string;
