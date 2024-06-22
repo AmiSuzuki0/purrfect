@@ -9,6 +9,7 @@ interface Message {
   ts: string;
   text: string;
   user: string;
+  url:string;
   userInfo?: {
     profile: {
       image_48: string;
