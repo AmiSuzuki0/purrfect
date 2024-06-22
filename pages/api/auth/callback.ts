@@ -29,9 +29,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const response = await client.oauth.v2.access({
       client_id: clientId,
       client_secret: clientSecret,
-      code: code,
+      code: code as string,
       redirect_uri: redirectUri,
     }) as OAuthAccessResult;
+    console.log(response);
 
     const userToken = response.authed_user.access_token;
     console.log('User OAuth Access Response:', response); // Log OAuth response
