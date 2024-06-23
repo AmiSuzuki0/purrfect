@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Rammetto_One } from "next/font/google";
 import Loading from '../components/loading';
-
+import Cookies from 'js-cookie';
 
 const RammettoOne = Rammetto_One({ subsets: ["latin"], weight: ["400"] });
 
@@ -25,15 +25,18 @@ interface Channel {
 }
 
 const Timeline: React.FC = () => {
-  const router = useRouter();
-  const { token } = router.query;
+  const token = Cookies.get('token');
   const [channels, setChannels] = useState<Channel[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+
   const fetchData = async (token: string) => {
     setLoading(true);
     try {
+      if (!token) {
+        throw new Error('Token not found');
+      }
       const response = await fetch(`/api/slack?token=${token}`);
       const data = await response.json();
       setChannels(data.channels || []);
