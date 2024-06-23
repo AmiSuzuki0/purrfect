@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { WebClient,WebAPICallResult } from '@slack/web-api';
+import { WebClient, WebAPICallResult } from '@slack/web-api';
+import cookie from 'cookie';
 
 interface UserInfo {
   profile: {
@@ -32,8 +33,6 @@ interface UsersInfoResult extends WebAPICallResult {
 
 const fetchChannelsAndMessages = async (token: string): Promise<{ channels: Channel[], messages: Message[] }> => {
   const client = new WebClient(token);
-  console.log('Using token:', token);
-  console.log('Using token:', process.env.NEXT_PUBLIC_SLACK_API_TOKEN);
 
   try {
     // Fetch channels with "times-" prefix
@@ -93,7 +92,8 @@ const fetchChannelsAndMessages = async (token: string): Promise<{ channels: Chan
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const token = req.query.token as string;
+  const cookies = cookie.parse(req.headers.cookie || '');
+  const token = cookies.token;
 
   if (!token) {
     res.status(400).json({ error: 'Missing token' });
