@@ -79,6 +79,7 @@ const Timeline: React.FC = () => {
 
       if (Array.isArray(data)) {
         const validData: Res[] = data.map(item => ({
+          ts: item.ts,
           text: item.text,
           user: item.user,
           url: item.url,
