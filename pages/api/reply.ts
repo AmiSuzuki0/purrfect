@@ -9,6 +9,10 @@ interface UserInfo {
     real_name: string;
   }
 
+interface UsersInfoResult extends WebAPICallResult {
+user: UserInfo;
+}
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const cookies = cookie.parse(req.headers.cookie || '');
     const token = cookies.token;
