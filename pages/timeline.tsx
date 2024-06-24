@@ -30,6 +30,7 @@ interface Channel {
 }
 
 interface Res {
+  ts: string;
   text: string;
   user: string;
   url: string;
