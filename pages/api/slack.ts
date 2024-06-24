@@ -16,6 +16,9 @@ interface Message {
   userInfo?: UserInfo; // ユーザー情報がある場合にのみ定義
   url?: string; // URLがある場合にのみ定義
   subtype?: string; // subtypeがある場合にのみ定義
+  thread_ts?: string;
+  reply_count?:number;
+  channel_id:string;
 }
 
 interface Channel {
@@ -71,6 +74,7 @@ const fetchChannelsAndMessages = async (token: string): Promise<{ channels: Chan
             message.userInfo = userInfoResult.user;
           }
           message.url = `https://${process.env.NEXT_PUBLIC_SLACK_WORKSPACE}.slack.com/archives/${channel.id}/p${message.ts.replace('.', '')}`;
+          message.channel_id = channel.id;
         }
     
         // フィルタリングされたメッセージをallMessagesに追加
