@@ -64,9 +64,9 @@ const Timeline: React.FC = () => {
 
   return (
     <div className="bg-slate-900 min-h-lvh text-slate-400 pt-8 pb-8">
-        <div className="container sm:mx-auto pr-2 pl-2 box-border max-w-xl mr-auto ml-auto">
-            <h1 className={`${RammettoOne.className} text-7xl -ml-12 text-center`}><img className="inline w-24 mr-4" src="/img/logo01.png" alt="" />purrfect</h1>
-            <div className="grid w-full mt-16 gap-y-8">
+        <div className="container sm:mx-auto pr-4 pl-4 box-border max-w-xl mr-auto ml-auto">
+        <h1 className={`${RammettoOne.className} md:-ml-8 text-4xl md:text-7xl text-center`}><a href="/"><img className="inline-block mr-2 w-16 md:inline md:w-24 md:mr-4" src="/img/logo01.png" alt="" />purrfect</a></h1>
+            <div className="grid w-full mt-8 mb:mt-16 gap-y-6 md:gap-y-8">
                 {loading ? (
                 <Loading />
                 ) : (
@@ -75,7 +75,7 @@ const Timeline: React.FC = () => {
                             <a href={message.url} target="_blank">
                             {message.userInfo && (
                                 <div className="flex gap-x-2 items-center">
-                                    <img src={message.userInfo.profile.image_48} alt={message.userInfo.real_name} className="rounded-full mr-2" />
+                                    <img src={message.userInfo.profile.image_48} alt={message.userInfo.real_name} className="rounded-full w-8 mr-2" />
                                     <strong>{message.userInfo.real_name}</strong>
                                     <small className='text-slate-600 ml-2'>{new Date(parseFloat(message.ts) * 1000).toLocaleString()}</small>
                                 </div>
