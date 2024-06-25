@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { Rammetto_One } from 'next/font/google';
 import Loading from '../components/loading';
 import Cookies from 'js-cookie';
+import { getCachedData } from './api/events';
 
 const RammettoOne = Rammetto_One({ subsets: ['latin'], weight: ['400'] });
 
@@ -57,6 +58,8 @@ const Timeline: React.FC = () => {
       }
       const response = await fetch(`/api/slack`);
       const data = await response.json();
+      //const data = getCachedData(); // キャッシュされたデータを取得
+
       setChannels(data.channels || []);
       setMessages(data.messages || []);
       console.log(data);
@@ -133,11 +136,11 @@ const Timeline: React.FC = () => {
 
     fetchData(token as string);
 
-    const interval = setInterval(() => {
-      fetchData(token as string);
-    }, 300000); // 5 minutes
+    // const interval = setInterval(() => {
+    //   fetchData(token as string);
+    // }, 300000); // 5 minutes
 
-    return () => clearInterval(interval);
+    // return () => clearInterval(interval);
   }, [token]);
 
   return (
