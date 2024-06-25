@@ -1,23 +1,26 @@
-# Nextra Docs Template 
+# Purrfect
 
-This is a template for creating documentation with [Nextra](https://nextra.site).
+このSlack統合サービスは、Slackチャンネルのメッセージを監視し、メッセージスレッドを取得し、（未実装）返信を投稿できるようにするものです
 
-[**Live Demo →**](https://nextra-docs-template.vercel.app)
+![image](https://github.com/AmiSuzuki0/purrfect/assets/13365342/28913919-c632-49f1-801f-359ea12bd5fe)
 
-[![](.github/screenshot.png)](https://nextra-docs-template.vercel.app)
+## 機能
 
-## Quick Start
+Slackチャンネルの新しいメッセージを監視
+メッセージスレッドをユーザー情報と共に取得
+Slackメッセージへの返信を投稿
+Slackイベントに基づいたリアルタイムデータ更新
 
-Click the button to clone this repository and deploy it on Vercel:
+### 前提条件
 
-[![](https://vercel.com/button)](https://vercel.com/new/clone?s=https%3A%2F%2Fgithub.com%2Fshuding%2Fnextra-docs-template&showOptionalTeamCreation=false)
+- Node.js（v14.x以降）
+- 管理権限を持つSlackワークスペース
+- vercel.com
 
-## Local Development
+### インストール
 
-First, run `pnpm i` to install the dependencies.
+npm install
 
-Then, run `pnpm dev` to start the development server and visit localhost:3000.
+### サーバーの起動
 
-## License
-
-This project is licensed under the MIT License.
+yarn dev
