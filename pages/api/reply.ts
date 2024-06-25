@@ -3,21 +3,21 @@ import { WebClient, WebAPICallResult } from '@slack/web-api';
 import cookie from 'cookie';
 
 interface UserInfo {
-    profile: {
-      image_48: string;
-    };
-    real_name: string;
-  }
+  profile: {
+    image_48: string;
+  };
+  real_name: string;
+}
 
 interface UsersInfoResult extends WebAPICallResult {
-user: UserInfo;
+  user: UserInfo;
 }
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-    const cookies = cookie.parse(req.headers.cookie || '');
-    const token = cookies.token;
-    const channelId = req.query.channel_id as string;
-    const threadTs = req.query.thread_ts as string;
+  const cookies = cookie.parse(req.headers.cookie || '');
+  const token = cookies.token;
+  const channelId = req.query.channel_id as string;
+  const threadTs = req.query.thread_ts as string;
 
   if (!token || !channelId || !threadTs) {
     res.status(400).json({ error: 'Missing token, channel ID, or thread timestamp' });
@@ -32,9 +32,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       ts: threadTs,
     });
 
-    const messages = await Promise.all(result.messages.map(async (message: any) => {
+    const messages = await Promise.all(
+      result.messages.map(async (message: any) => {
         if (message.user) {
-          const userInfo = await client.users.info({ user: message.user }) as UsersInfoResult;
+          const userInfo = (await client.users.info({ user: message.user })) as UsersInfoResult;
           message.userInfo = {
             profile: {
               image_48: userInfo.user.profile.image_48,
@@ -43,8 +44,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           };
         }
         return message;
-      }));
-  
+      }),
+    );
 
     res.status(200).json(messages);
   } catch (error) {

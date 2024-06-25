@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Rammetto_One } from "next/font/google";
+import { Rammetto_One } from 'next/font/google';
 import Loading from '../components/loading';
 import Cookies from 'js-cookie';
 
-const RammettoOne = Rammetto_One({ subsets: ["latin"], weight: ["400"] });
+const RammettoOne = Rammetto_One({ subsets: ['latin'], weight: ['400'] });
 
 interface Message {
   ts: string;
   text: string;
   user: string;
-  url:string;
+  url: string;
   subtype?: string; // subtypeがある場合にのみ定義
   thread_ts?: string;
-  reply_count?:number;
+  reply_count?: number;
   channel_id: string;
   userInfo?: {
     profile: {
@@ -49,7 +49,6 @@ const Timeline: React.FC = () => {
   const [replies, setReplies] = useState<Res[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-
   const fetchData = async (token: string) => {
     setLoading(true);
     try {
@@ -62,15 +61,15 @@ const Timeline: React.FC = () => {
       setMessages(data.messages || []);
       console.log(data);
     } catch (error) {
-        console.error('Error fetching data:', error);
-        setChannels([]);
-        setMessages([]);
+      console.error('Error fetching data:', error);
+      setChannels([]);
+      setMessages([]);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
-  const handleClick = async (channelId: string, threadTs: string , index:number) => {
+  const handleClick = async (channelId: string, threadTs: string, index: number) => {
     // console.log('Channel ID:', channelId);
     // console.log('Thread TS:', threadTs);
     try {
@@ -78,17 +77,19 @@ const Timeline: React.FC = () => {
       const data = await replyResponse.json();
 
       if (Array.isArray(data)) {
-        const validData: Res[] = data.map(item => ({
+        const validData: Res[] = data.map((item) => ({
           ts: item.ts,
           text: item.text,
           user: item.user,
           url: item.url,
-          userInfo: item.userInfo ? {
-            profile: {
-              image_48: item.userInfo.profile.image_48,
-            },
-            real_name: item.userInfo.real_name,
-          } : undefined
+          userInfo: item.userInfo
+            ? {
+                profile: {
+                  image_48: item.userInfo.profile.image_48,
+                },
+                real_name: item.userInfo.real_name,
+              }
+            : undefined,
         }));
         setReplies(validData);
       } else {
@@ -96,23 +97,25 @@ const Timeline: React.FC = () => {
         setReplies([]);
       }
 
-      setMessages(prevMessages => {
+      setMessages((prevMessages) => {
         return prevMessages.map((message, idx) => {
           if (idx === index) {
             return {
               ...message,
-              res: data.map(item => ({
+              res: data.map((item) => ({
                 ts: item.ts,
                 text: item.text,
                 user: item.user,
                 url: item.url,
-                userInfo: item.userInfo ? {
-                  profile: {
-                    image_48: item.userInfo.profile.image_48,
-                  },
-                  real_name: item.userInfo.real_name,
-                } : undefined
-              }))
+                userInfo: item.userInfo
+                  ? {
+                      profile: {
+                        image_48: item.userInfo.profile.image_48,
+                      },
+                      real_name: item.userInfo.real_name,
+                    }
+                  : undefined,
+              })),
             };
           } else {
             return message;
@@ -139,51 +142,64 @@ const Timeline: React.FC = () => {
 
   return (
     <div className="bg-slate-900 min-h-lvh text-slate-400 pt-8 pb-8">
-        <div className="container sm:mx-auto pr-4 pl-4 box-border max-w-xl mr-auto ml-auto">
-        <h1 className={`${RammettoOne.className} md:-ml-8 text-4xl md:text-7xl text-center`}><a href="/"><img className="inline-block mr-2 w-16 md:inline md:w-24 md:mr-4" src="/img/logo01.png" alt="" />purrfect</a></h1>
-            <div className="grid w-full mt-8 mb:mt-16 gap-y-6 md:gap-y-8">
-                {loading ? (
-                <Loading />
-                ) : (
-                    messages.map((message, index) => (
-                        <div className="rounded-lg p-6 box-border shadow-[1px_1px_12px_0_rgba(255,255,255,0.1)]" key={index}>
-                            <a href={message.url} target="_blank">
-                            {message.userInfo && (
-                                <div className="flex gap-x-2 items-center">
-                                    <img src={message.userInfo.profile.image_48} alt={message.userInfo.real_name} className="rounded-full w-8 mr-2" />
-                                    <strong>{message.userInfo.real_name}</strong>
-                                    <small className='text-slate-600 ml-2'>{new Date(parseFloat(message.ts) * 1000).toLocaleString()}</small>
-                                </div>
-                            )}
-                            <p className="break-all mt-2 line-clamp-4">{message.text}</p>
-                            </a>
-                            {message.reply_count > 0 && typeof message.reply_count !== "undefined" && (
-                            <div className="flex mt-2">
-                              <button onClick={() => handleClick(message.channel_id ?? '', message.thread_ts ?? '',index)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 inline"><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" /></svg>
-                                {message.reply_count}
-                              </button>
-                            </div>
-                            )}
-                            {message.res &&( message.res.map((date, index) => (
-                              index !== 0 && (
-                              <div className="block mt-4 ml-8" key={index}>
-                              {date.userInfo && (
-                                  <div className="flex gap-x-2 items-center">
-                                      <img src={date.userInfo.profile.image_48} alt={date.userInfo.real_name} className="rounded-full w-8 mr-2" />
-                                      <strong>{date.userInfo.real_name}</strong>
-                                      <small className='text-slate-600 ml-2'>{new Date(parseFloat(date.ts) * 1000).toLocaleString()}</small>
-                                  </div>
-                              )}
-                                <p className="break-all mt-2 line-clamp-4">{date.text}</p>
-                              </div>
-                              )
-                            )))}
-                        </div>
-                    ))
+      <div className="container sm:mx-auto pr-4 pl-4 box-border max-w-xl mr-auto ml-auto">
+        <h1 className={`${RammettoOne.className} md:-ml-8 text-4xl md:text-7xl text-center`}>
+          <a href="/">
+            <img className="inline-block mr-2 w-16 md:inline md:w-24 md:mr-4" src="/img/logo01.png" alt="" />
+            purrfect
+          </a>
+        </h1>
+        <div className="grid w-full mt-8 mb:mt-16 gap-y-6 md:gap-y-8">
+          {loading ? (
+            <Loading />
+          ) : (
+            messages.map((message, index) => (
+              <div className="rounded-lg p-6 box-border shadow-[1px_1px_12px_0_rgba(255,255,255,0.1)]" key={index}>
+                <a href={message.url} target="_blank">
+                  {message.userInfo && (
+                    <div className="flex gap-x-2 items-center">
+                      <img src={message.userInfo.profile.image_48} alt={message.userInfo.real_name} className="rounded-full w-8 mr-2" />
+                      <strong>{message.userInfo.real_name}</strong>
+                      <small className="text-slate-600 ml-2">{new Date(parseFloat(message.ts) * 1000).toLocaleString()}</small>
+                    </div>
+                  )}
+                  <p className="break-all mt-2 line-clamp-4">{message.text}</p>
+                </a>
+                {message.reply_count > 0 && typeof message.reply_count !== 'undefined' && (
+                  <div className="flex mt-2">
+                    <button onClick={() => handleClick(message.channel_id ?? '', message.thread_ts ?? '', index)}>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 inline">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155"
+                        />
+                      </svg>
+                      {message.reply_count}
+                    </button>
+                  </div>
                 )}
-            </div>
+                {message.res &&
+                  message.res.map(
+                    (date, index) =>
+                      index !== 0 && (
+                        <div className="block mt-4 ml-8" key={index}>
+                          {date.userInfo && (
+                            <div className="flex gap-x-2 items-center">
+                              <img src={date.userInfo.profile.image_48} alt={date.userInfo.real_name} className="rounded-full w-8 mr-2" />
+                              <strong>{date.userInfo.real_name}</strong>
+                              <small className="text-slate-600 ml-2">{new Date(parseFloat(date.ts) * 1000).toLocaleString()}</small>
+                            </div>
+                          )}
+                          <p className="break-all mt-2 line-clamp-4">{date.text}</p>
+                        </div>
+                      ),
+                  )}
+              </div>
+            ))
+          )}
         </div>
+      </div>
     </div>
   );
 };
