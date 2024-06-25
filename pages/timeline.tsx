@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router';
 import { Rammetto_One } from "next/font/google";
 import Loading from '../components/loading';
