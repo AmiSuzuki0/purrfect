@@ -32,6 +32,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       ts: threadTs,
     });
 
+    if (!result.messages) {
+      throw new Error('No messages found in the thread.');
+    }
+
     const messages = await Promise.all(
       result.messages.map(async (message: any) => {
         if (message.user) {

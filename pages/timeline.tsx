@@ -165,7 +165,7 @@ const Timeline: React.FC = () => {
                   )}
                   <p className="break-all mt-2 line-clamp-4">{message.text}</p>
                 </a>
-                {message.reply_count > 0 && typeof message.reply_count !== 'undefined' && (
+                {message.reply_count && message.reply_count > 0 && typeof message.reply_count !== 'undefined' && (
                   <div className="flex mt-2">
                     <button onClick={() => handleClick(message.channel_id ?? '', message.thread_ts ?? '', index)}>
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 inline">
