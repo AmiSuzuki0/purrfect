@@ -12,7 +12,7 @@ const Home: React.FC = () => {
       return;
     }
 
-    const slackAuthUrl = `https://slack.com/oauth/v2/authorize?client_id=${clientId}&scope=channels:history,channels:read,users:read,groups:read&user_scope=channels:history,channels:read,users:read,groups:read&redirect_uri=${redirectUri}`;
+    const slackAuthUrl = `https://slack.com/oauth/v2/authorize?client_id=${clientId}&user_scope=channels:history,channels:read,users:read,groups:read,chat:write&redirect_uri=${redirectUri}`;
 
     window.location.href = slackAuthUrl;
   };
