@@ -59,9 +59,9 @@ const Timeline: React.FC = () => {
       }
       const response = await fetch(`/api/slack`);
       const data = await response.json();
+
       setChannels(data.channels || []);
       setMessages(data.messages || []);
-      console.log(data);
     } catch (error) {
       console.error('Error fetching data:', error);
       setChannels([]);
@@ -71,12 +71,21 @@ const Timeline: React.FC = () => {
     }
   };
 
+  const checkForNewMessages = async () => {
+    try {
+      const response = await fetch(`/api/check-messages`);
+      const data = await response.json();
+      console.log(data.newMessages);
+      if (data.newMessages) {
+        await fetchData(token as string); // 新しいメッセージがある場合はデータを再取得
+      }
+    } catch (error) {
+      console.error('Error checking for new messages:', error);
+    }
+  };
+
   const handleClick = async (channelId: string, threadTs: string, index: number) => {
     setShowReplies((prev) => ({ ...prev, [index]: !prev[index] }));
-    // console.log('Channel ID:', channelId);
-    // console.log('Thread TS:', threadTs);
-    console.log();
-
     if (messages[index] !== undefined) {
       const message = messages[index];
       if (message.reply_count !== undefined && message.reply_count > 0) {
@@ -144,6 +153,7 @@ const Timeline: React.FC = () => {
 
   const handleCommentSubmit = async (channelId: string, threadTs: string, index: number) => {
     if (!commentText[index]) return;
+    setLoading(true);
     console.log(channelId, threadTs, commentText[index]);
     try {
       const response = await fetch(`/api/comment`, {
@@ -159,27 +169,24 @@ const Timeline: React.FC = () => {
       });
 
       if (response.ok) {
-        // Clear the input field after successful submission
         setCommentText((prev) => ({ ...prev, [index]: '' }));
-        // Optionally, you can fetch the updated replies here
         handleClick(channelId, threadTs, index);
       } else {
         console.error('Failed to submit comment');
       }
     } catch (error) {
       console.error('Error submitting comment:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     if (!token) return;
-
     fetchData(token as string);
-
     const interval = setInterval(() => {
-      fetchData(token as string);
-    }, 300000); // 5 minutes
-
+      checkForNewMessages();
+    }, 60000); // 1分ごとにチェック
     return () => clearInterval(interval);
   }, [token]);
 
