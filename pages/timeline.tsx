@@ -75,7 +75,6 @@ const Timeline: React.FC = () => {
     try {
       const response = await fetch(`/api/check-messages`);
       const data = await response.json();
-      console.log(data.newMessages);
       if (data.newMessages) {
         await fetchData(token as string); // 新しいメッセージがある場合はデータを再取得
       }
