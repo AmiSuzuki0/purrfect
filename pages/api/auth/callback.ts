@@ -33,7 +33,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       redirect_uri: redirectUri,
     })) as OAuthAccessResult;
 
-    console.log(response);
+    //console.log(response);
     const userToken = response.authed_user.access_token;
     //console.log('User OAuth Access Response:', response); // Log OAuth response
 

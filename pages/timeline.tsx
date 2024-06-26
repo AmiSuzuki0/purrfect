@@ -75,7 +75,6 @@ const Timeline: React.FC = () => {
     try {
       const response = await fetch(`/api/check-messages`);
       const data = await response.json();
-      console.log(data.newMessages);
       if (data.newMessages) {
         await fetchData(token as string); // 新しいメッセージがある場合はデータを再取得
       }
@@ -154,7 +153,7 @@ const Timeline: React.FC = () => {
   const handleCommentSubmit = async (channelId: string, threadTs: string, index: number) => {
     if (!commentText[index]) return;
     setLoading(true);
-    console.log(channelId, threadTs, commentText[index]);
+    //console.log(channelId, threadTs, commentText[index]);
     try {
       const response = await fetch(`/api/comment`, {
         method: 'POST',
