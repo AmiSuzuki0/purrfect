@@ -59,7 +59,7 @@ const fetchChannelsAndMessages = async (token: string): Promise<{ channels: Chan
         try {
           const messagesResult = (await client.conversations.history({
             channel: channel.id,
-            limit: 5, // 50件までのメッセージを取得
+            limit: 10, // 50件までのメッセージを取得
           })) as ConversationsHistoryResult;
 
           // フィルタリングとユーザー情報の取得
