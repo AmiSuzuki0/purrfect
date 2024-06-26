@@ -26,25 +26,28 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const client = new WebClient();
 
   try {
-    const response = await client.oauth.v2.access({
+    const response = (await client.oauth.v2.access({
       client_id: clientId,
       client_secret: clientSecret,
       code: code as string,
       redirect_uri: redirectUri,
-    }) as OAuthAccessResult;
+    })) as OAuthAccessResult;
 
     console.log(response);
     const userToken = response.authed_user.access_token;
-    console.log('User OAuth Access Response:', response); // Log OAuth response
+    //console.log('User OAuth Access Response:', response); // Log OAuth response
 
     // トークンをクッキーに保存
-    res.setHeader('Set-Cookie', cookie.serialize('token', userToken, {
-      httpOnly: false,
-      secure: true,
-      maxAge: 60 * 60 * 24 * 7, // 7 day
-      sameSite: 'strict',
-      path: '/',
-    }));
+    res.setHeader(
+      'Set-Cookie',
+      cookie.serialize('token', userToken, {
+        httpOnly: false,
+        secure: true,
+        maxAge: 60 * 60 * 24 * 7, // 7 day
+        sameSite: 'strict',
+        path: '/',
+      }),
+    );
 
     res.redirect('/timeline');
   } catch (error) {

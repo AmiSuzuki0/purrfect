@@ -1,9 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { WebClient } from '@slack/web-api';
-
-const token = process.env.NEXT_SLACK_TOKEN;
+import cookie from 'cookie';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
+  const cookies = cookie.parse(req.headers.cookie || '');
+  const token = cookies.token;
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
