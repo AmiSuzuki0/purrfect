@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { Rammetto_One } from 'next/font/google';
 import Loading from '../components/loading';
 import Cookies from 'js-cookie';
-
+import DOMPurify from 'dompurify';
 const RammettoOne = Rammetto_One({ subsets: ['latin'], weight: ['400'] });
 
 interface Message {
@@ -212,7 +212,7 @@ const Timeline: React.FC = () => {
                       <small className="text-slate-600 ml-2">{new Date(parseFloat(message.ts) * 1000).toLocaleString()}</small>
                     </div>
                   )}
-                  <p className="break-all mt-2 line-clamp-4">{message.text}</p>
+                  <p className="messageArea break-all mt-2 line-clamp-4" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(message.text, { ADD_ATTR: ['target'] }) }}></p>
                 </a>
 
                 <div className="flex mt-2">
@@ -241,7 +241,8 @@ const Timeline: React.FC = () => {
                                   <small className="text-slate-600 ml-2">{new Date(parseFloat(date.ts) * 1000).toLocaleString()}</small>
                                 </div>
                               )}
-                              <p className="break-all mt-2">{date.text}</p>
+
+                              <p className="messageArea break-all mt-2" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(date.text, { ADD_ATTR: ['target'] }) }}></p>
                             </div>
                           ),
                       )}
