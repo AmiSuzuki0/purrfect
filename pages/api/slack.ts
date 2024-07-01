@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { WebClient, WebAPICallResult } from '@slack/web-api';
 import cookie from 'cookie';
+const emojiData = require('emoji-datasource');
 
 interface UserInfo {
   profile: {
@@ -32,6 +33,20 @@ interface ConversationsHistoryResult extends WebAPICallResult {
 
 interface UsersInfoResult extends WebAPICallResult {
   user: UserInfo;
+}
+
+function replaceEmojiShortcodes(text: string): string {
+  const shortcodeRegex = /:([a-zA-Z0-9_+-]+):/g;
+  return text.replace(shortcodeRegex, (match, shortcode) => {
+    const emoji = emojiData.find((emoji) => emoji.short_names.includes(shortcode));
+    if (emoji && emoji.unified) {
+      const codePoint = parseInt(emoji.unified, 16); // 絵文字の unified 値を16進数から数値に変換する
+      return String.fromCodePoint(codePoint);
+    } else {
+      console.warn(`Emoji not found for shortcode: ${shortcode}`);
+      return match;
+    }
+  });
 }
 
 const fetchChannelsAndMessages = async (token: string): Promise<{ channels: Channel[] | undefined; messages: Message[] }> => {
@@ -69,7 +84,6 @@ const fetchChannelsAndMessages = async (token: string): Promise<{ channels: Chan
           });
 
           // メッセージごとにユーザー情報を取得して追加
-
           for (const message of filteredMessages) {
             if (message.user) {
               const userInfoResult = (await client.users.info({ user: message.user })) as UsersInfoResult;
@@ -77,6 +91,19 @@ const fetchChannelsAndMessages = async (token: string): Promise<{ channels: Chan
             }
             message.url = `https://${process.env.NEXT_PUBLIC_SLACK_WORKSPACE}.slack.com/archives/${channel.id}/p${message.ts.replace('.', '')}`;
             message.channel_id = channel.id;
+
+            if (message.text) {
+              message.text = replaceEmojiShortcodes(message.text);
+            }
+
+            if (message.text) {
+              const urlPattern = /<((https?:\/\/[^\s|>]+?)\|?(https?:\/\/[^\s|>]+?)?)>/g;
+              // message.text = message.text.replace(urlPattern, (match, url) => `<a target="_blank" href="${url}">${url}</a>`);
+              message.text = message.text.replace(urlPattern, (match, url1, url2) => {
+                const url = url2 ? url2 : url1; // パイプがある場合とない場合でURLを選択
+                return `<a target="_blank" href="${url}">${url}</a>`;
+              });
+            }
           }
 
           // フィルタリングされたメッセージをallMessagesに追加

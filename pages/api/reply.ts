@@ -18,6 +18,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = cookies.token;
   const channelId = req.query.channel_id as string;
   const threadTs = req.query.thread_ts as string;
+  const emojiData = require('emoji-datasource');
 
   if (!token || !channelId || !threadTs) {
     res.status(400).json({ error: 'Missing token, channel ID, or thread timestamp' });
@@ -25,6 +26,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const client = new WebClient(token);
+
+  function replaceEmojiShortcodes(text: string): string {
+    const shortcodeRegex = /:([a-zA-Z0-9_+-]+):/g;
+    return text.replace(shortcodeRegex, (match, shortcode) => {
+      const emoji = emojiData.find((emoji) => emoji.short_names.includes(shortcode));
+      if (emoji && emoji.unified) {
+        const codePoint = parseInt(emoji.unified, 16); // 絵文字の unified 値を16進数から数値に変換する
+        return String.fromCodePoint(codePoint);
+      } else {
+        console.warn(`Emoji not found for shortcode: ${shortcode}`);
+        return match;
+      }
+    });
+  }
 
   try {
     const result = await client.conversations.replies({
@@ -47,6 +62,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             real_name: userInfo.user.real_name,
           };
         }
+
+        if (message.text) {
+          message.text = replaceEmojiShortcodes(message.text);
+        }
+
+        if (message.text) {
+          const urlPattern = /<((https?:\/\/[^\s|>]+?)\|?(https?:\/\/[^\s|>]+?)?)>/g;
+          message.text = message.text.replace(urlPattern, (match, url1, url2) => {
+            const url = url2 ? url2 : url1; // パイプがある場合とない場合でURLを選択
+            return `<a target="_blank" href="${url}">${url}</a>`;
+          });
+        }
+
         return message;
       }),
     );
